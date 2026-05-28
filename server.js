@@ -20,12 +20,15 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-/* DATABASE CONNECTION */
+/* DATABASE CONNECTION (Aiven Cloud နှင့် လိုက်ဖော်ရွေအောင် ပြင်ဆင်ပြီး) */
 const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database: "bingo"
+    host: process.env.DB_HOST || "localhost",
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || "root",
+    database: process.env.DB_NAME || "bingo",
+    port: process.env.DB_PORT || 3306,
+    // 💡 Aiven MySQL အတွက် SSL Connection မဖြစ်မနေ လိုအပ်သောကြောင့် ထည့်သွင်းရခြင်း ဖြစ်ပါတယ်
+    ssl: process.env.DB_HOST ? { rejectUnauthorized: false } : null
 });
 
 /* CONNECT DATABASE */
