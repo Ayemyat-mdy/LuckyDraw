@@ -1,0 +1,426 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', 'Segoe UI', sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 10px;
+}
+
+/* ✨ အဝိုင်းခလုတ်များ၏ General Style ရွှေဝါရောင်ဆန်ဆန် Gradient Effects */
+.nav-btn-circle {
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: #ffffff;
+}
+
+.nav-btn-circle:hover {
+    transform: scale(1.08);
+}
+
+.nav-btn-circle:active {
+    transform: scale(0.95);
+}
+
+.btn-icon-wrap {
+    font-size: 1.6rem;
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+.btn-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+/* ✨ Prize Button (ဘယ်ဘက်) အဝါရောင်တောက်တောက်ဒီဇိုင်း */
+.prize-btn {
+    background: linear-gradient(135deg, #ffeb3b, #fbc02d);
+    color: #000000;
+    border: 2px solid #fbc02d;
+}
+
+.prize-btn .btn-icon-wrap {
+    color: #d32f2f;
+    /* လက်ဆောင်ဗူးအနီရောင်လေး */
+}
+
+/* ✨ Rank Button (ညာဘက်) စတိုင်လ်ကျကျ အဖြူရောင်ဒီဇိုင်း */
+.rank-btn {
+    background: #ffffff;
+    color: #000000;
+    border: 2px solid #e0e0e0;
+}
+
+.rank-btn .btn-icon-wrap {
+    color: #ffca28;
+    /* ရွှေဖလားရောင် */
+}
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    padding: 0 10px;
+    width: 100%;
+}
+.phone-container {
+    background: linear-gradient(to bottom, #ffccd5, #fff0f3);
+    width: 100%;
+    max-width: 410px;
+    height: 100vh;
+    max-height: 840px;
+    border-radius: 40px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 25px 20px;
+    overflow: hidden;
+    border: 8px solid #ffffff;
+}
+
+.header-nav {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.top-logo {
+    max-width: 55px;
+    height: auto;
+    object-fit: contain;
+}
+
+.profile-icon {
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #888888;
+    font-size: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.main-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #1a1a1a;
+    letter-spacing: 1px;
+    margin-top: 10px;
+}
+
+.wheel-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.wheel-pointer {
+    width: 35px;
+    height: 45px;
+    background: linear-gradient(135deg, #d4af37, #aa7c11);
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    clip-path: polygon(50% 100%, 0 0, 100% 0);
+    filter: drop-shadow(0px 3px 2px rgba(0,0,0,0.2));
+}
+
+.outer-gold-ring {
+    width: 310px;
+    height: 310px;
+    background: radial-gradient(circle, #f3e5ab 30%, #d4af37 70%, #aa7c11 100%);
+    border-radius: 50%;
+    padding: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), inset 0 2px 5px rgba(255,255,255,0.5);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff;
+    transform-origin: center center;
+    transform: rotate(calc(var(--i) * 18deg)) translateY(-144px);
+}
+
+/* ဆု ၅ ကွက်စာ ကွက်တိ 72 ဒီဂရီစီ သတ်မှတ်ထားသော ဘီးနောက်ခံ */
+.spin-wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 5px solid #a87900;
+    background: conic-gradient(
+    #00d2ff 0deg 72deg,    /* 💎 Diamond */
+    #ffd700 72deg 144deg,  /* 🥇 Gold */
+    #e2e8f0 144deg 216deg, /* 🥈 Silver */
+    #cd7f32 216deg 288deg, /* 🥉 Bronze */
+    #ef4444 288deg 360deg  /* 🎁 နှစ်သိမ့်ဆု */
+);
+    transition: transform 5s cubic-bezier(0.25, 1, 0.5, 1);
+    position: relative;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+.inner-center-pin {
+    width: 35px;
+    height: 35px;
+    background: radial-gradient(circle, #ffe57f 0%, #d4af37 80%, #9e7815 100%);
+    border: 3px solid #6b5103;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+}
+
+.number-tag {
+    position: absolute;
+    width: 40px;
+    height: 50%; 
+    left: calc(50% - 20px);
+    top: 0;
+    transform-origin: bottom center; 
+    transform: rotate(calc((var(--i) * 72deg) - 36deg));
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; 
+}
+
+.number-tag span {
+    display: inline-block;
+    font-size: 42px;          /* 30px ကနေ 42px အထိ တိုးလိုက်တယ် */
+    font-weight: 900;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    transform: rotate(360deg); 
+    margin-top: 15px;         /* စာလုံးကြီးလာလို့ ဘီးအနားသတ်နဲ့ မကပ်အောင် margin အပေါ်ကို နည်းနည်းလျှော့ပေးရမယ် */
+}
+
+.spin-btn {
+    width: 100%;
+    background: linear-gradient(to bottom, #d4af37 0%, #b38600 100%);
+    border: none;
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 800;
+    padding: 16px;
+    border-radius: 40px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(179, 134, 0, 0.4), inset 0 2px 4px rgba(255,255,255,0.4);
+    letter-spacing: 1px;
+    transition: all 0.2s ease;
+}
+
+.spin-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(179, 134, 0, 0.5);
+}
+
+.spin-btn:disabled {
+    background: #cccccc;
+    color: #888888;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.bottom-nav {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.bottom-btn {
+    width: 48px;
+    height: 48px;
+    background-color: #cbd5e1;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #475569;
+    font-size: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.nav-toggle-group {
+    background-color: #cbd5e1;
+    padding: 4px;
+    border-radius: 30px;
+    display: flex;
+    gap: 5px;
+}
+
+.toggle-item {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #475569;
+    font-size: 18px;
+}
+
+.toggle-item.active {
+    background-color: #ffffff;
+    color: #b38600;
+}
+
+.footer-text {
+    font-size: 11px;
+    color: #666666;
+    margin-top: 10px;
+    font-weight: 500;
+}
+/* Popup ရဲ့ နောက်ခံအမည်းရောင် */
+.popup-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* မှုန်ဝါးဝါး နောက်ခံ */
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Popup ကို Active ဖြစ်ချိန်တွင် ပြသရန် */
+.popup-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Popup Box ဒီဇိုင်း */
+.popup-content {
+    background: #ffffff;
+    width: 85%;
+    max-width: 320px;
+    padding: 30px 20px;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transform: translateY(30px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.popup-overlay.show .popup-content {
+    transform: translateY(0);
+}
+
+/* ပေါပ်အပ်ထဲက အလှဆင်ပစ္စည်းများ */
+.popup-icon {
+    font-size: 50px;
+    margin-bottom: 10px;
+    animation: bounce 1s infinite alternate;
+}
+
+.popup-content h2 {
+    font-size: 20px;
+    color: #1a1a1a;
+    font-weight: 800;
+    margin-bottom: 5px;
+}
+
+.popup-content p {
+    font-size: 14px;
+    color: #666666;
+}
+
+/* ဆုနာမည်ပြမည့် Badge အလှလေး */
+.prize-badge {
+    background: linear-gradient(135deg, #ffd700, #b38600);
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 800;
+    padding: 12px 20px;
+    border-radius: 15px;
+    margin: 20px 0;
+    display: inline-block;
+    box-shadow: 0 5px 15px rgba(179, 134, 0, 0.3);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    width: 100%;
+}
+
+/* OK Button ဒီဇိုင်း */
+.popup-close-btn {
+    background: #1a1a1a;
+    color: #ffffff;
+    border: none;
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.popup-close-btn:hover {
+    background: #333333;
+}
+
+/* အိုင်ကွန် ခုန်နေမည့် Animation */
+@keyframes bounce {
+    from { transform: scale(1); }
+    to { transform: scale(1.15); }
+}
+
+@media (max-height: 740px) {
+    .phone-container { padding: 15px 15px; }
+    .outer-gold-ring { width: 270px; height: 270px; }
+    .dot { transform: rotate(calc(var(--i) * 18deg)) translateY(-124px); }
+    .main-title { font-size: 28px; }
+    .spin-btn { padding: 12px; font-size: 22px; }
+    
+    /* ဘီးဆိုဒ် သေးသွားတဲ့ အခါမှာပါ အိုင်ကွန်ကို သင့်တော်မယ့် ဆိုဒ်အကြီး ထားပေးဖို့ */
+    .number-tag span { 
+        font-size: 32px;      /* ၁၂ အစား ၃၂ အထိ တိုးပေးလိုက်တယ် သားကြီး */
+        margin-top: 15px; 
+    }
+}
