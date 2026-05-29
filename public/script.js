@@ -1,3 +1,11 @@
+// ==========================================================================
+// 🌐 BACKEND SERVER URL CONFIGURATION (RENDER PRODUCTION URL)
+// ==========================================================================
+// Localhost မှာ စမ်းရင် Local IP ကိုသုံးပြီး Render ပေါ်ရောက်ရင် တိုက်ရိုက် ချိတ်ဆက်ပါမည်။
+const BACKEND_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "http://192.168.21.168:3000" 
+    : "https://luckdrawupdate.onrender.com"; 
+
 // ================= DOM CONTENT LOADED GUARD =================
 // စာမျက်နှာရှိ Element များ အားလုံး တက်လာပြီးမှ Event Listener များ ထည့်ရန်
 document.addEventListener('DOMContentLoaded', () => {
@@ -170,8 +178,8 @@ async function validateRegisterForm(event) {
         }
 
         try {
-            // 🛠️ FIX: API Endpoint ကို မှန်ကန်သော ပုံစံသို့ ပြောင်းလဲထားပါသည်
-            const response = await fetch("/api/register", {
+            // 🌟 Render API ဖြင့် တိုက်ရိုက်ချိတ်ဆက်မည်
+            const response = await fetch(`${BACKEND_URL}/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -192,13 +200,7 @@ async function validateRegisterForm(event) {
                 if (typeof toggleOccupationFields === "function") {
                     toggleOccupationFields();
                 }
-                // အကယ်၍ Single-Page-App ပုံစံ Box အဖွင့်အပိတ်ဆိုရင် switchForm သုံးပါမယ်
-                if (document.getElementById('loginBox')) {
-                    switchForm('login');
-                } else {
-                    // 🛠️ FIX: သီးသန့် reg.html ကနေဝင်တာဆိုရင် အောင်မြင်တာနဲ့ login.html သို့ စနစ်တကျ လွှတ်ပေးပါမည်
-                    window.location.href = 'login.html';
-                }
+                window.location.href = 'login.html';
             } else {
                 if (phoneError) {
                     phoneError.textContent = data.message || "Phone number already exists.";
@@ -216,12 +218,11 @@ async function validateRegisterForm(event) {
     return isValid;
 }
 
-// ================= 🎰 LOGIN FORM VALIDATION & REDIRECT TO HOME =================
-// 🎯 ၁။ Server ဆီက Session Name Broadcast ကို ဖမ်းဖို့ Variable တစ်ခု ကြေညာထားမယ်
-// (HTML ထဲမှာ <script src="/socket.io/socket.io.js"></script> သို့မဟုတ် CDN ချိတ်ပေးထားဖို့ လိုပါတယ်)
-// 🎯 [အရေးကြီး] ဖိုင်ရဲ့ အပေါ်ဆုံး ထိပ်ဆုံးမှာပဲ အရင်ဆုံး ကြေညာပါ!
-const socket = io("http://192.168.21.244:3000"); 
-let currentSessionName = ""; // Variable အရင်တည်ဆောက်တာ (Initialization)
+
+// 🎯 ၁။ Server ဆီက Session Name Broadcast ကို ဖမ်းယူရန်
+// 🌟 Socket IO ကိုလည်း သတ်မှတ်ထားသော Render URL ဖြင့် ချိတ်ဆက်ထားသည်
+const socket = io(BACKEND_URL);
+let currentSessionName = ""; 
 
 // ဆာဗာက ပို့တာကို ဖမ်းယူမယ်
 socket.on("sessionNameBroadcast", (data) => {
@@ -230,9 +231,9 @@ socket.on("sessionNameBroadcast", (data) => {
     }
 });
 
-// 🎯 ပြီးမှ အောက်မှာ ဖန်ရှင်တွေကို ရေးပါ
+// 🎯 LOGIN VALIDATION FUNCTION
 async function validateLoginForm(event) {
-    event.preventDefault(); 
+    event.preventDefault();
 
     const loginPhoneInput = document.getElementById('loginPhone');
     if (!loginPhoneInput) return;
@@ -247,51 +248,44 @@ async function validateLoginForm(event) {
     }
 
     try {
-        // Backend သို့ ပို့ခြင်း
-        const response = await fetch('https://luckdrawupdate.onrender.com/api/register', {
+        // Backend Render URL သို့ ပို့ခြင်း
+        const response = await fetch(`${BACKEND_URL}/api/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ 
+            body: JSON.stringify({
                 phone: phone,
-                sessionName: currentSessionName // 🌟 အပေါ်မှာ ကြေညာပြီးသားမို့ Error မတက်တော့ပါ
+                sessionName: currentSessionName
             })
         });
 
         const data = await response.json();
 
         if (data.success) {
-
-            if (data.rankCount < 200) {
-
-                // 🎯 home-script.js က userData.username ကို ဖတ်တာဖြစ်တဲ့အတွက် 
-                // Object ရဲ့ key ကို 'username' လို့ပဲ တိုက်ရိုက်ပေးရမယ် သားကြီး။
-                // Backend က လာတဲ့ data.user.name (results[0].username) ကို သယ်ထည့်ပေးလိုက်မယ်။
+            if (data.rankCount < 50) {
                 const userObj = {
                     id: data.user.id,
                     userid: data.user.id,
-                    username: data.user.name,  // 🌟 အဓိက သော့ချက်က ဒီကောင်ပဲ! (home-script ဖတ်နိုင်အောင်)
+                    username: data.user.name,  
                     userph: data.user.userph,
                     useroccup: data.user.useroccup
                 };
-                
+
                 // LocalStorage ထဲကို JSON string စနစ်နဲ့ သိမ်းဆည်းမယ်
                 localStorage.setItem('user', JSON.stringify(userObj));
 
-                // မူရင်း Key တစ်ခုချင်းစီ သီးသန့်သိမ်းတဲ့ နေရာတွေလည်း မပျက်အောင် ထားခဲ့မယ်
+                // မူရင်း Key တစ်ခုချင်းစီ သီးသန့်သိမ်းသည်များ မပျက်အောင် ထားခဲ့မည်
                 localStorage.setItem('userid', data.user.id);
-                localStorage.setItem('username', data.user.name); // 🌟 ဒါကလည်း အပေါ်က finalUsername အတွက် အလုပ်လုပ်မယ်
+                localStorage.setItem('username', data.user.name); 
                 localStorage.setItem('userph', data.user.userph);
                 localStorage.setItem('useroccup', data.user.useroccup);
 
-                // 🚀 အကုန်အဆင်ပြေပြီဆိုမှ home.html ကို လွှတ်မယ်
+                // 🚀 home.html ကို လွှတ်မယ်
                 window.location.href = 'home.html';
-
             } else {
                 alert("You are invalid user for this session!");
             }
-
         } else {
             alert(data.message || "ဖုန်းနံပါတ် မှားယွင်းနေပါသည် သို့မဟုတ် အကောင့်မရှိပါ။");
         }
@@ -330,5 +324,17 @@ function changePage(direction) {
     }
 }
 
-// ================= REMOVED CONFLICTING AUTOMATIC REDIRECTS =================
-// 🛠️ ဇွတ်အတင်း ပြောင်းခိုင်းနေတဲ့ setupFormRedirect လုပ်ငန်းစဉ်ကို Form flow မပျက်စီးစေရန် ဖယ်ရှားသန့်စင်ပြီးပါပြီ။
+// ================= TERMS SUBMIT =================
+
+function setupFormRedirect(formId, redirectUrl) {
+    const form = document.getElementById(formId);
+
+    if (!form) {
+        return;
+    }
+
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        window.location.href = redirectUrl;
+    });
+}
