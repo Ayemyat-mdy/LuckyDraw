@@ -170,7 +170,8 @@ async function validateRegisterForm(event) {
         }
 
         try {
-            const response = await fetch("/register", {
+            // 🛠️ FIX: API Endpoint ကို မှန်ကန်သော ပုံစံသို့ ပြောင်းလဲထားပါသည်
+            const response = await fetch("/api/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -191,7 +192,13 @@ async function validateRegisterForm(event) {
                 if (typeof toggleOccupationFields === "function") {
                     toggleOccupationFields();
                 }
-                switchForm('login');
+                // အကယ်၍ Single-Page-App ပုံစံ Box အဖွင့်အပိတ်ဆိုရင် switchForm သုံးပါမယ်
+                if (document.getElementById('loginBox')) {
+                    switchForm('login');
+                } else {
+                    // 🛠️ FIX: သီးသန့် reg.html ကနေဝင်တာဆိုရင် အောင်မြင်တာနဲ့ login.html သို့ စနစ်တကျ လွှတ်ပေးပါမည်
+                    window.location.href = 'login.html';
+                }
             } else {
                 if (phoneError) {
                     phoneError.textContent = data.message || "Phone number already exists.";
@@ -254,36 +261,36 @@ async function validateLoginForm(event) {
 
         const data = await response.json();
 
-       if (data.success) {
+        if (data.success) {
 
-    if (data.rankCount < 200) {
+            if (data.rankCount < 200) {
 
-        // 🎯 home-script.js က userData.username ကို ဖတ်တာဖြစ်တဲ့အတွက် 
-        // Object ရဲ့ key ကို 'username' လို့ပဲ တိုက်ရိုက်ပေးရမယ် သားကြီး။
-        // Backend က လာတဲ့ data.user.name (results[0].username) ကို သယ်ထည့်ပေးလိုက်မယ်။
-        const userObj = {
-            id: data.user.id,
-            userid: data.user.id,
-            username: data.user.name,  // 🌟 အဓိက သော့ချက်က ဒီကောင်ပဲ! (home-script ဖတ်နိုင်အောင်)
-            userph: data.user.userph,
-            useroccup: data.user.useroccup
-        };
-        
-        // LocalStorage ထဲကို JSON string စနစ်နဲ့ သိမ်းဆည်းမယ်
-        localStorage.setItem('user', JSON.stringify(userObj));
+                // 🎯 home-script.js က userData.username ကို ဖတ်တာဖြစ်တဲ့အတွက် 
+                // Object ရဲ့ key ကို 'username' လို့ပဲ တိုက်ရိုက်ပေးရမယ် သားကြီး။
+                // Backend က လာတဲ့ data.user.name (results[0].username) ကို သယ်ထည့်ပေးလိုက်မယ်။
+                const userObj = {
+                    id: data.user.id,
+                    userid: data.user.id,
+                    username: data.user.name,  // 🌟 အဓိက သော့ချက်က ဒီကောင်ပဲ! (home-script ဖတ်နိုင်အောင်)
+                    userph: data.user.userph,
+                    useroccup: data.user.useroccup
+                };
+                
+                // LocalStorage ထဲကို JSON string စနစ်နဲ့ သိမ်းဆည်းမယ်
+                localStorage.setItem('user', JSON.stringify(userObj));
 
-        // မူရင်း Key တစ်ခုချင်းစီ သီးသန့်သိမ်းတဲ့ နေရာတွေလည်း မပျက်အောင် ထားခဲ့မယ်
-        localStorage.setItem('userid', data.user.id);
-        localStorage.setItem('username', data.user.name); // 🌟 ဒါကလည်း အပေါ်က finalUsername အတွက် အလုပ်လုပ်မယ်
-        localStorage.setItem('userph', data.user.userph);
-        localStorage.setItem('useroccup', data.user.useroccup);
+                // မူရင်း Key တစ်ခုချင်းစီ သီးသန့်သိမ်းတဲ့ နေရာတွေလည်း မပျက်အောင် ထားခဲ့မယ်
+                localStorage.setItem('userid', data.user.id);
+                localStorage.setItem('username', data.user.name); // 🌟 ဒါကလည်း အပေါ်က finalUsername အတွက် အလုပ်လုပ်မယ်
+                localStorage.setItem('userph', data.user.userph);
+                localStorage.setItem('useroccup', data.user.useroccup);
 
-        // 🚀 အကုန်အဆင်ပြေပြီဆိုမှ home.html ကို လွှတ်မယ်
-        window.location.href = 'home.html';
+                // 🚀 အကုန်အဆင်ပြေပြီဆိုမှ home.html ကို လွှတ်မယ်
+                window.location.href = 'home.html';
 
-    } else {
-        alert("You are invalid user for this session!");
-    }
+            } else {
+                alert("You are invalid user for this session!");
+            }
 
         } else {
             alert(data.message || "ဖုန်းနံပါတ် မှားယွင်းနေပါသည် သို့မဟုတ် အကောင့်မရှိပါ။");
@@ -293,6 +300,7 @@ async function validateLoginForm(event) {
         alert("Server နှင့် ချိတ်ဆက်မှု မအောင်မြင်ပါ (Server Error)");
     }
 }
+
 // ================= TERMS & CONDITIONS NAVIGATION =================
 
 let currentPage = 1;
@@ -322,37 +330,5 @@ function changePage(direction) {
     }
 }
 
-// ================= TERMS SUBMIT (REDIRECT TO REG.HTML) =================
-
-/*function handleTermsSubmit(event) {
-    event.preventDefault();
-    const agreeCheckbox = document.getElementById('agreeCheckbox');
-
-    if (agreeCheckbox && agreeCheckbox.checked) {
-        window.location.href = "reg.html";
-    }
-}*/
-function setupFormRedirect(formId, redirectUrl) {
-    const form = document.getElementById(formId);
-
-    if (!form) {
-        console.error(`Form with ID '${formId}' not found.`);
-        return;
-    }
-
-    form.addEventListener('submit', function (event) {
-        // Prevent default form submission reload
-        event.preventDefault();
-
-        // Optional: Add logic here to grab and save form data
-        // const formData = new FormData(form);
-
-        // Redirect to the specified URL
-        window.location.href = redirectUrl;
-    });
-}
-
-// Usage: Call this function once the DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    setupFormRedirect('registrationForm', 'login.html');
-});
+// ================= REMOVED CONFLICTING AUTOMATIC REDIRECTS =================
+// 🛠️ ဇွတ်အတင်း ပြောင်းခိုင်းနေတဲ့ setupFormRedirect လုပ်ငန်းစဉ်ကို Form flow မပျက်စီးစေရန် ဖယ်ရှားသန့်စင်ပြီးပါပြီ။
