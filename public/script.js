@@ -210,128 +210,6 @@ async function validateRegisterForm(event) {
 }
 
 // ================= 🎰 LOGIN FORM VALIDATION & REDIRECT TO HOME =================
-
-/*async function validateLoginForm(event) {
-    event.preventDefault(); // Form refresh ဖြစ်ပြီး page ပျက်သွားတာကို တားဆီးရန်
-
-    const loginPhoneInput = document.getElementById('loginPhone');
-    if (!loginPhoneInput) return;
-
-    const phone = loginPhoneInput.value.trim();
-
-    // ဖုန်းနံပါတ် Validation စစ်ဆေးခြင်း
-    const phoneRegex = /^09\d{7,9}$/;
-    if (!phoneRegex.test(phone)) {
-        alert("ကျေးဇူးပြု၍ မှန်ကန်သော ဖုန်းနံပါတ် (၀၉ အစရှိပြီး ဂဏန်း ၉ လုံးမှ ၁၁ လုံး) ရိုက်ထည့်ပါ။");
-        return;
-    }
-
-    try {
-        // Backend /api/login သို့ ဖုန်းနံပါတ် ပို့ပေးခြင်း
-        const response = await fetch('/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ phone: phone })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            // 🌟 ပြင်ဆင်ချက် - home-script.js နှင့် စနစ်တကျ အံကိုက်ဖြစ်စေရန် 'user' object ကို JSON String စနစ်ဖြင့် တိုက်ရိုက်သိမ်းဆည်းခြင်း
-            const userObj = {
-                id: data.user.id,
-                userid: data.user.id,
-                username: data.user.name,
-                userph: data.user.userph,
-                useroccup: data.user.useroccup
-            };
-            localStorage.setItem('user', JSON.stringify(userObj));
-
-            // မူလ Key တစ်ခုချင်းစီ သိမ်းဆည်းမှုကိုလည်း အခြားကုဒ်များ မပျက်စီးစေရန် ဆက်လက်ထိန်းသိမ်းပေးထားပါသည်
-            localStorage.setItem('userid', data.user.id);
-            localStorage.setItem('username', data.user.name);
-            localStorage.setItem('userph', data.user.userph);
-            localStorage.setItem('useroccup', data.user.useroccup);
-
-            // 🚀 Login အောင်မြင်သွားပြီဖြစ်၍ Bingo ကစားမည့် home.html သို့ တိုက်ရိုက် ခေါ်ဆောင်သွားခြင်း
-            window.location.href = 'home.html';
-        } else {
-            // ဖုန်းနံပါတ် မှားယွင်းနေပါက အကြောင်းကြားစာပြခြင်း
-            alert(data.message || "ဖုန်းနံပါတ် မှားယွင်းနေပါသည် သို့မဟုတ် အကောင့်မရှိပါ။");
-        }
-    } catch (error) {
-        console.error("Login Error:", error);
-        alert("Server နှင့် ချိတ်ဆက်မှု မအောင်မြင်ပါ (Server Error)");
-    }
-}
-async function validateLoginForm(event) {
-    event.preventDefault(); // Form refresh ဖြစ်ပြီး page ပျက်သွားတာကို တားဆီးရန်
-
-    const loginPhoneInput = document.getElementById('loginPhone');
-    if (!loginPhoneInput) return;
-
-    const phone = loginPhoneInput.value.trim();
-
-    // ဖုန်းနံပါတ် Validation စစ်ဆေးခြင်း
-    const phoneRegex = /^09\d{7,9}$/;
-    if (!phoneRegex.test(phone)) {
-        alert("ကျေးဇူးပြု၍ မှန်ကန်သော ဖုန်းနံပါတ် (၀၉ အစရှိပြီး ဂဏန်း ၉ လုံးမှ ၁၁ လုံး) ရိုက်ထည့်ပါ။");
-        return;
-    }
-
-    try {
-        // Backend /api/login သို့ ဖုန်းနံပါတ် ပို့ပေးခြင်း
-        const response = await fetch('/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ phone: phone })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-
-            // 🌟 Corrected Logic: ranktbl ထဲက rankid အရေအတွက်သည် 100 ထက်နည်းမှ (Less than 100) home.html ကို ပေးသွားမည်။
-            if (data.rankCount < 50) {
-
-                // 🌟 ပြင်ဆင်ချက် - home-script.js နှင့် စနစ်တကျ အံကိုက်ဖြစ်စေရန် 'user' object ကို JSON String စနစ်ဖြင့် တိုက်ရိုက်သိမ်းဆည်းခြင်း
-                const userObj = {
-                    id: data.user.id,
-                    userid: data.user.id,
-                    username: data.user.name,
-                    userph: data.user.userph,
-                    useroccup: data.user.useroccup
-                };
-                localStorage.setItem('user', JSON.stringify(userObj));
-
-                // မူလ Key တစ်ခုချင်းစီ သိမ်းဆည်းမှုကိုလည်း အခြားကုဒ်များ မပျက်စီးစေရန် ဆက်လက်ထိန်းသိမ်းပေးထားပါသည်
-                localStorage.setItem('userid', data.user.id);
-                localStorage.setItem('username', data.user.name);
-                localStorage.setItem('userph', data.user.userph);
-                localStorage.setItem('useroccup', data.user.useroccup);
-
-                // 🚀 Login အောင်မြင်သွားပြီဖြစ်၍ Bingo ကစားမည့် home.html သို့ တိုက်ရိုက် ခေါ်ဆောင်သွားခြင်း
-                window.location.href = 'home.html';
-
-            } else {
-                // 🛑 အရေအတွက် ၁၀၀ နှင့် ၁၀၀ အထက် ဖြစ်နေပါက ဤနေရာသို့ ရောက်ရှိပြီး Alert Box ပြသမည်
-                alert("You are invalid user for this session!");
-            }
-
-        } else {
-            // ဖုန်းနံပါတ် မှားယွင်းနေပါက အကြောင်းကြားစာပြခြင်း
-            alert(data.message || "ဖုန်းနံပါတ် မှားယွင်းနေပါသည် သို့မဟုတ် အကောင့်မရှိပါ။");
-        }
-    } catch (error) {
-        console.error("Login Error:", error);
-        alert("Server နှင့် ချက်ဆက်မှု မအောင်မြင်ပါ (Server Error)");
-    }
-}
-*/
 // 🎯 ၁။ Server ဆီက Session Name Broadcast ကို ဖမ်းဖို့ Variable တစ်ခု ကြေညာထားမယ်
 // (HTML ထဲမှာ <script src="/socket.io/socket.io.js"></script> သို့မဟုတ် CDN ချိတ်ပေးထားဖို့ လိုပါတယ်)
 // 🎯 [အရေးကြီး] ဖိုင်ရဲ့ အပေါ်ဆုံး ထိပ်ဆုံးမှာပဲ အရင်ဆုံး ကြေညာပါ!
@@ -363,7 +241,7 @@ async function validateLoginForm(event) {
 
     try {
         // Backend သို့ ပို့ခြင်း
-        const response = await fetch('http://192.168.21.244:3000/api/login', {
+        const response = await fetch('https://luckdrawupdate.onrender.com/api/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
